@@ -1,83 +1,44 @@
 <%@page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
 <html>
 <head>
-<script type="text/javascript" src="${ctx}/static/datatables/js/jquery.js"></script>
-<script type="text/javascript" src="${ctx}/static/datatables/js/jquery.dataTables.js"></script>
+<script type="text/javascript"
+	src="${ctx}/static/datatables/js/jquery.js"></script>
+<script type="text/javascript"
+	src="${ctx}/static/datatables/js/jquery.dataTables.js"></script>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#example').DataTable();
-	
-	 var table = $('#example2').DataTable( {
-	        "ajax": "data/arrays.txt",
-	        "deferRender": true,//快速删除搜索条中内容
-	        "columnDefs": [ {
-	            "targets": -1,
-	            "data": null,
-	            "defaultContent": "<button>Click!</button>"
-	        } ]
-	    } );
-	 
-	    $('#example2 tbody').on( 'click', 'button', function () {
-	        var data = table.row( $(this).parents('tr') ).data();
-	        alert( data[0] +"'s salary is: "+ data[ 5 ] );
-	    } );
-	    
-	    $('#example3').dataTable( {
-	        "ajax": "data/1.json",
-	        "columns": [
-	            { "data": "name" },
-	            { "data": "position" },
-	            { "data": "office" },
-	            { "data": "extn" },
-	            { "data": "start_date" },
-	            { "data": "salary" }
-	        ]
-	    } );
-	    
-	    $("#example4 tbody tr").click( function( e ) {
-	    	console.log("enter example4...");
-	        if ( $(this).hasClass('row_selected') ) {
-	            $(this).removeClass('row_selected');
-	        }
-	        else {
-	            oTable.$('tr.row_selected').removeClass('row_selected');
-	            $(this).addClass('row_selected');
-	        }
-	    });
-	    
-	    $('#delete').click( function() {
-	    	alert(1);
-	        var anSelected = fnGetSelected( oTable );
-	        if ( anSelected.length !== 0 ) {
-	            oTable.fnDeleteRow( anSelected[0] );
-	        }
-	    } );
-	   	
-	    /* Init the table */
-	    oTable =  $('#example4').dataTable( {
-	        "ajax": "data/1.json",
-	        "columns": [
-	            { "data": "name" },
-	            { "data": "position" },
-	            { "data": "office" },
-	            { "data": "extn" },
-	            { "data": "start_date" },
-	            { "data": "salary" }
-	        ]
-	    } );
-} );
-
-function fnGetSelected( oTableLocal )
-{
-	console.log("enter fnGetSelected...");
-    return oTableLocal.$('tr.row_selected');
-}
+	var oTableLocal = null;
+	jQuery(document).ready(function() {
+		 oTableLocal = $('#example').DataTable();
+		 
+		    $('#example tbody').on( 'click', 'tr', function () {
+		        if ( $(this).hasClass('selected') ) {
+		            $(this).removeClass('selected');
+		        }
+		        else {
+		        	oTableLocal.$('tr.selected').removeClass('selected');
+		            $(this).addClass('selected');
+		        }
+		    } );
+		 
+		    $('#button').click( function () {
+		    	oTableLocal.row('.selected').remove().draw( false );
+		    } );
+		    
+		    /* Add a click handler for the delete row */
+		    $('#delete').click( function() {
+		    	 console.log(oTableLocal.row('.selected').data[0]);
+		    	 oTableLocal.row('.selected').remove().draw(false);
+		    } );
+	});
 </script>
-<link href="${ctx}/static/datatables/css/jquery.dataTables.css" type="text/css" rel="stylesheet" />
+<link href="${ctx}/static/datatables/css/jquery.dataTables.css"
+	type="text/css" rel="stylesheet" />
 </head>
 <body>
+
+<p><a href="javascript:void(0)" id="delete">Delete selected row</a></p>
 <table id="example" class="display" cellspacing="0" width="100%">
         <thead>
             <tr>
@@ -559,82 +520,6 @@ function fnGetSelected( oTableLocal )
                 <td>$112,000</td>
             </tr>
         </tbody>
-    </table>
-    
-    <table id="example2" class="display" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Extn.</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </thead>
- 
-        <tfoot>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Extn.</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </tfoot>
-    </table>
-    
-    
-    <table id="example3" class="display" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Extn.</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </thead>
- 
-        <tfoot>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Extn.</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </tfoot>
-    </table>
-    
-    
-    
-    <p><a href="javascript:void(0)" id="delete">Delete selected row</a></p>
-    <table id="example4" class="display" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Extn.</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </thead>
- 
-        <tfoot>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Extn.</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </tfoot>
     </table>
 </body>
 </html>
